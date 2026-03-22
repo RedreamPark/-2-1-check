@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>심화영어I · Lesson 1 Grammar Quiz (YBM 신정현)</title>
+<style>
+:root{
+  --green:#1D9E75;--green-d:#0F6E56;--green-l:#E1F5EE;--green-deep:#085041;
+  --red:#A32D2D;--red-l:#FCEBEB;--red-deep:#501313;
+  --amber:#BA7517;--amber-l:#FAEEDA;--amber-deep:#633806;
+  --blue:#185FA5;--blue-l:#E6F1FB;
+  --bg:#F5F3EF;--card:#FFFFFF;--border:rgba(0,0,0,0.08);
+  --text:#1a1a1a;--muted:#666;--hint:#aaa;
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR','Apple SD Gothic Neo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+#app{max-width:680px;margin:0 auto;padding:24px 16px 60px;}
+
+.intro-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem 2rem;text-align:center;margin-top:16px;}
+.intro-logo{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--green);text-transform:uppercase;margin-bottom:18px;}
+.intro-title{font-size:26px;font-weight:800;line-height:1.3;margin-bottom:6px;}
+.intro-sub{font-size:14px;color:var(--muted);margin-bottom:26px;}
+.info-row{display:flex;gap:10px;justify-content:center;margin-bottom:22px;flex-wrap:wrap;}
+.info-card{background:var(--bg);border-radius:var(--rs);padding:14px 18px;min-width:85px;}
+.info-num{font-size:24px;font-weight:800;color:var(--green);}
+.info-lbl{font-size:11px;color:var(--muted);margin-top:3px;}
+.intro-note{background:var(--blue-l);border-radius:var(--rs);padding:12px 16px;font-size:13px;color:var(--blue);margin-bottom:26px;line-height:1.7;text-align:left;}
+.start-btn{width:100%;padding:16px;font-size:16px;font-weight:800;font-family:inherit;background:var(--green);color:#fff;border:none;border-radius:var(--r);cursor:pointer;transition:background .15s,transform .1s;}
+.start-btn:hover{background:var(--green-d);}
+.start-btn:active{transform:scale(.98);}
+
+.progress-wrap{height:5px;background:#DDD;border-radius:99px;overflow:hidden;margin-bottom:12px;}
+.progress-fill{height:5px;background:var(--green);border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1);}
+.hd-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.quiz-counter{font-size:13px;font-weight:700;color:var(--muted);}
+.cutline-chip{font-size:12px;font-weight:700;color:var(--green-deep);background:var(--green-l);padding:3px 10px;border-radius:99px;}
+.timer-row{display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;}
+.timer-block{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.timer-lbl{font-size:10px;color:var(--hint);text-transform:uppercase;letter-spacing:.05em;}
+.timer-ring{position:relative;width:52px;height:52px;}
+.timer-ring svg{transform:rotate(-90deg);}
+.timer-ring circle{fill:none;stroke-width:4;}
+.ring-bg{stroke:#E0E0E0;}
+.ring-fill{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .4s;}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--text);transition:color .3s;}
+.tw .ring-fill{stroke:var(--amber);}.tw .timer-num{color:var(--amber);}
+.td .ring-fill{stroke:var(--red);}.td .timer-num{color:var(--red);}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.td .timer-ring{animation:pulse .8s infinite;}
+
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:14px;animation:fadeUp .22s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.q-num{font-size:11px;color:var(--hint);margin-bottom:10px;letter-spacing:.05em;text-transform:uppercase;}
+.type-pill{display:inline-block;font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px;margin-bottom:10px;margin-left:6px;}
+.pill-g{background:var(--blue-l);color:var(--blue);}
+.pill-w{background:var(--red-l);color:var(--red-deep);}
+.q-en{font-size:16px;line-height:2.1;margin-bottom:18px;color:var(--text);}
+.blank-tag{font-weight:800;font-size:14px;color:var(--blue);background:var(--blue-l);padding:2px 8px;border-radius:5px;margin:0 2px;}
+.blank-label{font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.choices{display:flex;gap:10px;flex-wrap:wrap;}
+.choice-btn{flex:1;min-width:110px;padding:12px 14px;font-size:15px;font-family:inherit;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--card);color:var(--text);cursor:pointer;text-align:center;font-weight:600;transition:all .12s;}
+.choice-btn:hover:not(:disabled){border-color:var(--green);background:var(--green-l);color:var(--green-deep);}
+.choice-btn.correct{background:var(--green-l);border-color:var(--green);color:var(--green-deep);font-weight:800;}
+.choice-btn.wrong{background:var(--red-l);border-color:var(--red);color:var(--red-deep);}
+.choice-btn:disabled{cursor:default;}
+.wrong-label{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;}
+.timeout-msg{margin-top:10px;padding:10px 14px;border-radius:var(--rs);font-size:13px;font-weight:600;background:var(--amber-l);color:var(--amber-deep);border:1px solid #FAC775;}
+
+.result-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:32px 24px;text-align:center;margin-bottom:16px;}
+.result-emoji{font-size:48px;margin-bottom:12px;}
+.result-score{font-size:56px;font-weight:800;line-height:1;margin-bottom:8px;}
+.score-pass{color:var(--green);}.score-fail{color:var(--red);}
+.result-badge{display:inline-block;padding:5px 18px;border-radius:99px;font-size:14px;font-weight:800;margin-bottom:8px;}
+.badge-pass{background:var(--green-l);color:var(--green-deep);}
+.badge-fail{background:var(--red-l);color:var(--red-deep);}
+.result-pct{font-size:13px;color:var(--muted);margin-bottom:22px;}
+.stat-row{display:flex;gap:10px;justify-content:center;margin-bottom:26px;flex-wrap:wrap;}
+.stat-card{background:var(--bg);border-radius:var(--rs);padding:12px 18px;}
+.stat-num{font-size:22px;font-weight:800;}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.s-ok{color:var(--green);}.s-ng{color:var(--red);}.s-to{color:var(--amber);}
+.retry-btn{width:100%;padding:15px;font-size:15px;font-weight:800;font-family:inherit;background:var(--green);color:#fff;border:none;border-radius:var(--r);cursor:pointer;transition:background .15s,transform .1s;}
+.retry-btn:hover{background:var(--green-d);}
+.retry-btn:active{transform:scale(.98);}
+.review-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px;margin-top:16px;}
+.review-item{background:var(--card);border:1px solid #F09595;border-radius:var(--rs);padding:14px 16px;margin-bottom:8px;}
+.review-item.to{border-color:#FAC775;}
+.r-num{font-size:11px;color:var(--hint);margin-bottom:6px;}
+.r-en{font-size:13px;color:var(--text);margin-bottom:8px;line-height:1.8;}
+.tag{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;margin-right:4px;margin-top:2px;}
+.tag-ng{background:var(--red-l);color:var(--red-deep);}
+.tag-ok{background:var(--green-l);color:var(--green-deep);}
+.tag-to{background:var(--amber-l);color:var(--amber-deep);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const ALL_Q = [
+  // grammar type (a/b)
+  {n:1,type:'g',en:"Here [A] the answers posted on an art website.",blanks:[{label:"[A]",choices:["are","is"],answer:"are"}]},
+  {n:2,type:'g',en:"Here are [A] the answers posted on an art website.",blanks:[{label:"[A]",choices:["some","some of"],answer:"some of"}]},
+  {n:3,type:'g',en:"Here are some of the answers [A] on an art website.",blanks:[{label:"[A]",choices:["posted","posting"],answer:"posted"}]},
+  {n:4,type:'g',en:"These responses show [A] we typically treat art museums as a place of education.",blanks:[{label:"[A]",choices:["what","that"],answer:"that"}]},
+  {n:5,type:'g',en:"[A] the most familiar scenes at an art gallery are lectures conducted by docents.",blanks:[{label:"[A]",choices:["Some","Some of"],answer:"Some of"}]},
+  {n:6,type:'g',en:"[A] the most familiar scenes at an art gallery are lectures [B] by docents.",blanks:[{label:"[A]",choices:["Some","Some of"],answer:"Some of"},{label:"[B]",choices:["conducted","conducting"],answer:"conducted"}]},
+  {n:7,type:'g',en:"Docents [A] before a work of art may ask the children to describe its images.",blanks:[{label:"[A]",choices:["stood","standing"],answer:"standing"}]},
+  {n:8,type:'g',en:"Docents may ask the children [A] its images or to compare and contrast different images.",blanks:[{label:"[A]",choices:["describing","to describe"],answer:"to describe"}]},
+  {n:9,type:'g',en:"Docents may ask the children to describe its images or [A] and contrast different images.",blanks:[{label:"[A]",choices:["to compare","comparing"],answer:"to compare"}]},
+  {n:10,type:'g',en:"Docents may ask the children to compare and [A] different images.",blanks:[{label:"[A]",choices:["contrast","contrasting"],answer:"contrast"}]},
+  {n:11,type:'g',en:"[A] art museums are treated like schools by people, museum staff act like they have a special responsibility.",blanks:[{label:"[A]",choices:["Because","Because of"],answer:"Because"}]},
+  {n:12,type:'g',en:"Art museums are treated [A] schools by people.",blanks:[{label:"[A]",choices:["alike","like"],answer:"like"}]},
+  {n:13,type:'g',en:"Museum staff act [A] they have a special responsibility to educate the public.",blanks:[{label:"[A]",choices:["like","alike"],answer:"like"}]},
+  {n:14,type:'g',en:"Museum staff act like they have a special responsibility to [A] the public.",blanks:[{label:"[A]",choices:["educate","educating"],answer:"educate"}]},
+  {n:15,type:'g',en:"They are also strict about rules of conduct by [A] running or eating in the gallery.",blanks:[{label:"[A]",choices:["prohibiting","prohibit"],answer:"prohibiting"}]},
+  {n:16,type:'g',en:"They are strict about rules of conduct by prohibiting running or [A] in the gallery.",blanks:[{label:"[A]",choices:["eating","eat"],answer:"eating"}]},
+  {n:17,type:'g',en:"As a way [A] in the exhibition, visitors of all ages lay on the floor.",blanks:[{label:"[A]",choices:["participating","to participate"],answer:"to participate"}]},
+  {n:18,type:'g',en:"Visitors of all ages [A] on the floor in the museum's massive Turbine Hall.",blanks:[{label:"[A]",choices:["lay","laid"],answer:"lay"}]},
+  {n:19,type:'g',en:"Visitors lay on the floor, [A] their arms and legs.",blanks:[{label:"[A]",choices:["waving","waved"],answer:"waving"}]},
+  {n:21,type:'g',en:"The light was radiating from a giant yellow disk [A] from a height of twenty-seven meters.",blanks:[{label:"[A]",choices:["suspending","suspended"],answer:"suspended"}]},
+  {n:24,type:'g',en:"An artificial mist gave the light the effect of a dark winter sun [A] in fog.",blanks:[{label:"[A]",choices:["covered","covering"],answer:"covered"}]},
+  {n:25,type:'g',en:"During the six months [A] it was open, the exhibition attracted two million visitors.",blanks:[{label:"[A]",choices:["which","in which"],answer:"in which"}]},
+  {n:26,type:'g',en:"Eliasson's installations use basic materials [A] impress upon viewers images of Iceland's landscape.",blanks:[{label:"[A]",choices:["that","what"],answer:"that"}]},
+  {n:27,type:'g',en:"Eliasson's installations use basic materials that [A] upon viewers images of Iceland's landscape.",blanks:[{label:"[A]",choices:["impresses","impress"],answer:"impress"}]},
+  {n:28,type:'g',en:"These materials convey images of Iceland's landscape, [A] the artist grew up.",blanks:[{label:"[A]",choices:["where","which"],answer:"where"}]},
+  {n:29,type:'g',en:"When [A] on a large scale, these materials can awaken in visitors a new sense of space.",blanks:[{label:"[A]",choices:["produced","producing"],answer:"produced"}]},
+  {n:30,type:'g',en:"These materials can awaken in visitors a new sense of space [A] conveys powerful sensations.",blanks:[{label:"[A]",choices:["what","that"],answer:"that"}]},
+  {n:31,type:'g',en:"[A] impressive feature of the exhibition is that people who visit it want to share this magical experience.",blanks:[{label:"[A]",choices:["Other","Another"],answer:"Another"}]},
+  {n:32,type:'g',en:"People [A] visit the exhibition want to share this magical experience.",blanks:[{label:"[A]",choices:["who","what"],answer:"who"}]},
+  {n:33,type:'g',en:"People who [A] the exhibition want to share this magical experience.",blanks:[{label:"[A]",choices:["visit","visits"],answer:"visit"}]},
+  {n:36,type:'g',en:"At a time [A] people are becoming increasingly self-centered, his art helps us imagine a space of togetherness.",blanks:[{label:"[A]",choices:["when","which"],answer:"when"}]},
+  {n:37,type:'g',en:"People are becoming increasingly self-centered, [A] up in a world of private concerns.",blanks:[{label:"[A]",choices:["bound","binding"],answer:"bound"}]},
+  {n:39,type:'g',en:"Tiravanija has an approach to prove how [A] help people get together.",blanks:[{label:"[A]",choices:["can art","art can"],answer:"art can"}]},
+  {n:40,type:'g',en:"Tiravanija has an approach to prove how art can help people [A] together.",blanks:[{label:"[A]",choices:["get","getting"],answer:"get"}]},
+  {n:41,type:'g',en:"Tiravanija created an installation [A] Do We Dream Under the Same Sky.",blanks:[{label:"[A]",choices:["entitled","entitling"],answer:"entitled"}]},
+  {n:43,type:'g',en:"The installation aimed at bringing people together to [A] a community of sharing and giving.",blanks:[{label:"[A]",choices:["form","forming"],answer:"form"}]},
+  {n:44,type:'g',en:"The important ingredient in [A] this instant community is Tiravanija's 'kitchen art'.",blanks:[{label:"[A]",choices:["form","forming"],answer:"forming"}]},
+  {n:45,type:'g',en:"The important ingredient in forming this instant community [A] Tiravanija's 'kitchen art'.",blanks:[{label:"[A]",choices:["is","are"],answer:"is"}]},
+  {n:47,type:'g',en:"Tiravanija's 'kitchen art' consists of cooking and [A] food.",blanks:[{label:"[A]",choices:["serves","serving"],answer:"serving"}]},
+  {n:48,type:'g',en:"He became [A] when he created an installation performance.",blanks:[{label:"[A]",choices:["famous","famously"],answer:"famous"}]},
+  {n:49,type:'g',en:"He created an installation performance [A] he transformed a New York art gallery into a kitchen.",blanks:[{label:"[A]",choices:["in which","which"],answer:"in which"}]},
+  {n:50,type:'g',en:"He cooked Thai curry, [A] anyone could drop in and eat.",blanks:[{label:"[A]",choices:["what","which"],answer:"which"}]},
+  {n:52,type:'g',en:"It was [A] to be this casual in a gallery.",blanks:[{label:"[A]",choices:["thrilling","thrilled"],answer:"thrilling"}]},
+  {n:54,type:'g',en:"Visitors could participate in several activities, including [A] herbal tea and dining.",blanks:[{label:"[A]",choices:["drink","drinking"],answer:"drinking"}]},
+  {n:55,type:'g',en:"They could be more active by [A] their own kitchens.",blanks:[{label:"[A]",choices:["running","run"],answer:"running"}]},
+  {n:57,type:'g',en:"The performance of cooking and serving food [A] designed to create a connection between individuals.",blanks:[{label:"[A]",choices:["was","were"],answer:"was"}]},
+  {n:59,type:'g',en:"The performance was designed to create a connection between individuals, [A] usually remain separated in a traditional gallery.",blanks:[{label:"[A]",choices:["what","who"],answer:"who"}]},
+  {n:60,type:'g',en:"Individuals who usually [A] separated and solitary in a traditional gallery setting.",blanks:[{label:"[A]",choices:["remain","remains"],answer:"remain"}]},
+  {n:61,type:'g',en:"Tiravanija believes [A] art should be an event of communal involvement.",blanks:[{label:"[A]",choices:["what","that"],answer:"that"}]},
+  {n:62,type:'g',en:"[A] this purpose, the art museum had to break away from strict rules.",blanks:[{label:"[A]",choices:["Serve","To serve"],answer:"To serve"}]},
+  {n:64,type:'g',en:"The idea of [A] art museums had another breakthrough.",blanks:[{label:"[A]",choices:["liberating","liberate"],answer:"liberating"}]},
+  {n:65,type:'g',en:"The two artists posted seventy assignments, [A] were as simple as taking a photograph.",blanks:[{label:"[A]",choices:["who","which"],answer:"which"}]},
+  {n:66,type:'g',en:"The two artists posted seventy assignments, which [A] as simple as taking a photograph.",blanks:[{label:"[A]",choices:["was","were"],answer:"were"}]},
+  {n:67,type:'g',en:"The assignments were as simple as [A] a photograph of one's parents kissing.",blanks:[{label:"[A]",choices:["taking","took"],answer:"taking"}]},
+  {n:68,type:'g',en:"The assignments were as simple as taking a photograph of one's parents [A].",blanks:[{label:"[A]",choices:["kissing","kissed"],answer:"kissing"}]},
+  {n:69,type:'g',en:"People from all over the world [A] in responses detailing their lives.",blanks:[{label:"[A]",choices:["sending","sent"],answer:"sent"}]},
+  {n:70,type:'g',en:"People sent in responses [A] their lives.",blanks:[{label:"[A]",choices:["detailing","detailed"],answer:"detailing"}]},
+  {n:71,type:'g',en:"One assignment was [A] advice to yourself about a past event.",blanks:[{label:"[A]",choices:["giving","given"],answer:"giving"}]},
+  {n:72,type:'g',en:"One assignment was giving advice [A] about a past event.",blanks:[{label:"[A]",choices:["to yourself","yourself"],answer:"to yourself"}]},
+  {n:73,type:'g',en:"It [A] responses from the ridiculous to the tragic.",blanks:[{label:"[A]",choices:["was produced","produced"],answer:"produced"}]},
+  {n:74,type:'g',en:"Don't tell your father [A] you hate him before he goes to Iraq.",blanks:[{label:"[A]",choices:["what","that"],answer:"that"}]},
+  {n:75,type:'g',en:"Don't tell your father that you hate him before he [A] to Iraq.",blanks:[{label:"[A]",choices:["goes","will go"],answer:"goes"}]},
+  {n:76,type:'g',en:"When he [A] come back, you will be sorry for the rest of your life.",blanks:[{label:"[A]",choices:["won't","doesn't"],answer:"doesn't"}]},
+  {n:77,type:'g',en:"The project became a virtual art gallery [A] up of more than 8,000 contributions.",blanks:[{label:"[A]",choices:["making","made"],answer:"made"}]},
+  {n:78,type:'g',en:"Those who [A] involved in this project had the unique privilege of witnessing a new gallery.",blanks:[{label:"[A]",choices:["was","were"],answer:"were"}]},
+  {n:79,type:'g',en:"Those who were involved in this project [A] the unique privilege of witnessing a new gallery.",blanks:[{label:"[A]",choices:["had","having"],answer:"had"}]},
+  {n:80,type:'g',en:"They had the unique privilege of [A] a new gallery growing over the years.",blanks:[{label:"[A]",choices:["witnessing","witness"],answer:"witnessing"}]},
+  {n:81,type:'g',en:"It was [A] a tree, branching out to different parts of the world.",blanks:[{label:"[A]",choices:["alike","like"],answer:"like"}]},
+  {n:82,type:'g',en:"It was like a tree, [A] out to different parts of the world.",blanks:[{label:"[A]",choices:["branching","branched"],answer:"branching"}]},
+  {n:83,type:'g',en:"It was like a tree, branching out and [A] people everywhere into a global community.",blanks:[{label:"[A]",choices:["linked","linking"],answer:"linking"}]},
+  {n:84,type:'g',en:"These artists have proved [A] the value of a work of art depends on the way it interacts with people.",blanks:[{label:"[A]",choices:["what","that"],answer:"that"}]},
+  {n:85,type:'g',en:"Their experiments highlight the need [A] about and share together works of art.",blanks:[{label:"[A]",choices:["to communicate","communicating"],answer:"to communicate"}]},
+  {n:86,type:'g',en:"Their experiments highlight the need to communicate about and [A] together works of art.",blanks:[{label:"[A]",choices:["sharing","share"],answer:"share"}]},
+  {n:88,type:'g',en:"When art breaks free of the white walls of the traditional gallery, it is no longer [A].",blanks:[{label:"[A]",choices:["bored","boring"],answer:"boring"}]},
+  {n:90,type:'g',en:"Kids are running through the different gallery rooms because they are [A] about art.",blanks:[{label:"[A]",choices:["excited","exciting"],answer:"excited"}]},
+  {n:91,type:'g',en:"Contemporary art generally [A] works of art made from the period of the 1970s to the present.",blanks:[{label:"[A]",choices:["refers to","refers"],answer:"refers to"}]},
+  {n:92,type:'g',en:"Contemporary art is [A] by artistic challenges and innovations.",blanks:[{label:"[A]",choices:["characterizing","characterized"],answer:"characterized"}]},
+  {n:93,type:'g',en:"Contemporary art tries to [A] the barrier between art and other categories of cultural experience.",blanks:[{label:"[A]",choices:["erect","erase"],answer:"erase"}]},
+  {n:94,type:'g',en:"Contemporary art tries to erase the barrier between art and [A] categories of cultural experience.",blanks:[{label:"[A]",choices:["another","other"],answer:"other"}]},
+  {n:95,type:'g',en:"The reason for these bold experiments [A] to do with the way modern art became increasingly complicated.",blanks:[{label:"[A]",choices:["have","has"],answer:"has"}]},
+  {n:96,type:'g',en:"The reason has to do with the way [A] modern art became increasingly complicated.",blanks:[{label:"[A]",choices:["in which","which"],answer:"in which"}]},
+  {n:97,type:'g',en:"Modern art became increasingly complicated [A] it defined being artistic only in terms of individual talents.",blanks:[{label:"[A]",choices:["because","because of"],answer:"because"}]},
+  {n:99,type:'g',en:"The task of [A] difficult expressions and styles may be rewarding for a few art critics.",blanks:[{label:"[A]",choices:["understand","understanding"],answer:"understanding"}]},
+  {n:100,type:'g',en:"Understanding difficult expressions may be rewarding for [A] art critics and informed viewers.",blanks:[{label:"[A]",choices:["a little","a few"],answer:"a few"}]},
+  {n:101,type:'g',en:"Many others who [A] alienated by modern art are not rewarded by it.",blanks:[{label:"[A]",choices:["feels","feel"],answer:"feel"}]},
+  {n:102,type:'g',en:"Many others who feel [A] by modern art are not rewarded by it.",blanks:[{label:"[A]",choices:["alienating","alienated"],answer:"alienated"}]},
+  {n:104,type:'g',en:"The fate of modern art in the highly commercial world of the 20th century [A] that it became an expensive investment.",blanks:[{label:"[A]",choices:["was","were"],answer:"was"}]},
+  {n:105,type:'g',en:"Modern art became an expensive investment [A] could only end up in private collections.",blanks:[{label:"[A]",choices:["that","what"],answer:"that"}]},
+  {n:106,type:'g',en:"Contemporary art [A] as a reaction against this sense of disconnection in modern art.",blanks:[{label:"[A]",choices:["emerging","emerged"],answer:"emerged"}]},
+  {n:107,type:'g',en:"Contemporary art emerged as a reaction against this sense of [A] in modern art between the artwork and people.",blanks:[{label:"[A]",choices:["connection","disconnection"],answer:"disconnection"}]},
+  {n:108,type:'g',en:"[A] of challenging concepts and attitudes, contemporary art tries to offer a new horizon of artistic experience.",blanks:[{label:"[A]",choices:["Consisting","Consisted"],answer:"Consisting"}]},
+  {n:110,type:'g',en:"These artists experiment with different forms of artistic practice, [A] a wide variety of objects.",blanks:[{label:"[A]",choices:["incorporated","incorporating"],answer:"incorporating"}]},
+  {n:111,type:'g',en:"These artists incorporate objects often easily [A] in everyday life.",blanks:[{label:"[A]",choices:["finding","found"],answer:"found"}]},
+  {n:112,type:'g',en:"[A] including such unusual things in their art, these artists pushed out the boundaries of what was possible.",blanks:[{label:"[A]",choices:["By","In","On"],answer:"By"}]},
+  {n:113,type:'g',en:"These artists pushed out the boundaries of [A] was possible in the creation, presentation, and reception of art.",blanks:[{label:"[A]",choices:["that","what"],answer:"what"}]},
+  {n:114,type:'g',en:"Experimental forms of practice [A] in response to the limitations of modern art.",blanks:[{label:"[A]",choices:["emerging","emerged"],answer:"emerged"}]},
+  {n:115,type:'g',en:"Concerns about the ecology and the environment [A] evident in environmental art.",blanks:[{label:"[A]",choices:["is","are"],answer:"are"}]},
+  {n:116,type:'g',en:"Reconsideration of the relationship between the artwork and [A] lies outside the museum brought about the development of installation and public art.",blanks:[{label:"[A]",choices:["what","that"],answer:"what"}]},
+  {n:118,type:'g',en:"Advances in technology [A] to the development of a new form of media art.",blanks:[{label:"[A]",choices:["distributed","attributed","contributed"],answer:"contributed"}]},
+
+  // wrong word type
+  {n:23,type:'w',en:"[A], an artificial mist pumped in from sixteen humidifiers gave the light the effect of a dark winter sun covered in fog.",question:"문맥상 알맞지 않은 단어는?",choices:["Furthermore","In addition","Moreover","Also","Beside"],answer:"Beside"},
+  {n:58,type:'w',en:"The performance was designed to create a [A] between individuals, who usually remain separated and solitary.",question:"문맥상 알맞지 않은 단어는?",choices:["disconnection","connection"],answer:"disconnection"},
+];
+
+const TOTAL=20, CUTLINE=2, TIME_LIMIT=5;
+const CIRCUM=2*Math.PI*20;
+
+let questions=[], idx=0, answers={}, timeouts={}, screen='intro';
+let timerSec=TIME_LIMIT, timerInterval=null;
+
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function start(){
+  questions=shuffle(ALL_Q).slice(0,TOTAL);
+  idx=0; answers={}; timeouts={}; screen='quiz';
+  startTimer(); render();
+}
+
+function startTimer(){
+  clearInterval(timerInterval);
+  timerSec=TIME_LIMIT;
+  timerInterval=setInterval(()=>{
+    timerSec--;
+    updateTimerUI();
+    if(timerSec<=0) onTimeout();
+  },1000);
+}
+
+function updateTimerUI(){
+  const ring=document.querySelector('.ring-fill');
+  const num=document.querySelector('.timer-num');
+  const wrap=document.querySelector('.tw-wrap');
+  if(!ring||!num) return;
+  ring.style.strokeDashoffset=CIRCUM*(1-(timerSec/TIME_LIMIT));
+  num.textContent=timerSec;
+  if(wrap) wrap.className='tw-wrap'+(timerSec<=1?' td':timerSec<=2?' tw':'');
+}
+
+function onTimeout(){
+  clearInterval(timerInterval);
+  timeouts[idx]=true;
+  answers[idx]='__timeout__';
+  render();
+  setTimeout(()=>advance(),1200);
+}
+
+function advance(){
+  if(idx<TOTAL-1){idx++;startTimer();render();}
+  else{clearInterval(timerInterval);screen='result';render();}
+}
+
+function isCorrect(q,qi){
+  if(!answers[qi]||answers[qi]==='__timeout__') return false;
+  if(q.type==='g') return q.blanks.every((_,bi)=>answers[`${qi}_${bi}`]===q.blanks[bi].answer);
+  return answers[qi]===q.answer;
+}
+
+function scoreQ(){return questions.reduce((c,q,qi)=>isCorrect(q,qi)?c+1:c,0);}
+
+function render(){
+  const app=document.getElementById('app');
+  if(screen==='intro') app.innerHTML=renderIntro();
+  else if(screen==='quiz') app.innerHTML=renderQuiz();
+  else app.innerHTML=renderResult();
+  attachEvents();
+}
+
+function renderIntro(){
+  return `<div class="intro-box">
+  <div class="intro-logo">YBM(신정현) · 심화영어I</div>
+  <div class="intro-title">Lesson 1<br>어법&어휘 선택형</div>
+  <div class="intro-sub">The Art Museum for Getting Together</div>
+  <div class="info-row">
+    <div class="info-card"><div class="info-num">${TOTAL}</div><div class="info-lbl">랜덤 문항</div></div>
+    <div class="info-card"><div class="info-num">${CUTLINE}개</div><div class="info-lbl">합격 커트라인</div></div>
+    <div class="info-card"><div class="info-num">5초</div><div class="info-lbl">문항당 제한</div></div>
+    <div class="info-card"><div class="info-num">100+</div><div class="info-lbl">전체 문항 풀</div></div>
+  </div>
+  <div class="intro-note">⏱ 문제당 <strong>5초</strong> 제한 · 한글 해석 없이 영어 문장만 제시됩니다.<br>답 선택 즉시 채점 후 자동으로 다음 문제로 넘어갑니다.</div>
+  <button class="start-btn" id="start-btn">시작하기</button>
+</div>`;
+}
+
+function renderQuiz(){
+  const q=questions[idx];
+  const pct=Math.round((idx/TOTAL)*100);
+  const offset=CIRCUM*(1-(timerSec/TIME_LIMIT));
+  const twCls=timerSec<=1?'td':timerSec<=2?'tw':'';
+  const isTO=timeouts[idx];
+
+  let enHtml=q.en;
+  if(q.type==='g') q.blanks.forEach(b=>{enHtml=enHtml.replace(b.label,`<span class="blank-tag">${b.label}</span>`);});
+
+  const currentBi=q.type==='g'?q.blanks.findIndex((_,bi)=>answers[`${idx}_${bi}`]===undefined):-1;
+  const b=currentBi>=0?q.blanks[currentBi]:null;
+
+  let bodyHtml='';
+  if(isTO){
+    const ans=q.type==='g'?q.blanks.map(b=>b.answer).join(' / '):q.answer;
+    bodyHtml=`<div class="timeout-msg">⏰ 시간 초과! &nbsp;정답: <strong>${ans}</strong></div>`;
+  } else if(q.type==='g'&&b){
+    bodyHtml=`<div class="blank-label">${b.label} 중 알맞은 것은?</div>
+    <div class="choices">${b.choices.map(c=>`<button class="choice-btn" data-type="g" data-bi="${currentBi}" data-choice="${c}">${c}</button>`).join('')}</div>`;
+  } else if(q.type==='w'&&answers[idx]===undefined){
+    bodyHtml=`<div class="wrong-label">${q.question}</div>
+    <div class="choices">${q.choices.map(c=>`<button class="choice-btn" data-type="w" data-choice="${c}">${c}</button>`).join('')}</div>`;
+  }
+
+  const typePill=q.type==='g'
+    ?`<span class="type-pill pill-g">어법&어휘 선택</span>`
+    :`<span class="type-pill pill-w">알맞지 않은 단어</span>`;
+
+  return `<div class="hd-row">
+  <div class="quiz-counter">문항 ${idx+1} / ${TOTAL}</div>
+  <div class="cutline-chip">커트라인 ${CUTLINE}개</div>
+</div>
+<div class="progress-wrap"><div class="progress-fill" style="width:${pct}%"></div></div>
+<div class="timer-row">
+  <div class="timer-block">
+    <div class="timer-lbl">남은시간</div>
+    <div class="tw-wrap ${twCls}">
+      <div class="timer-ring">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle class="ring-bg" cx="26" cy="26" r="20"/>
+          <circle class="ring-fill" cx="26" cy="26" r="20" stroke-dasharray="${CIRCUM}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="timer-num">${timerSec}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="q-card">
+  <div class="q-num">원문 ${q.n}번 ${typePill}</div>
+  <div class="q-en">${enHtml}</div>
+  ${bodyHtml}
+</div>`;
+}
+
+function renderResult(){
+  const correct=scoreQ();
+  const toCount=Object.keys(timeouts).length;
+  const pass=correct>=CUTLINE;
+  const pct=Math.round((correct/TOTAL)*100);
+  const emoji=pass?(correct===TOTAL?'🎉':'👍'):(correct>=10?'💪':'📚');
+  const wrongIdxs=questions.map((_,qi)=>qi).filter(qi=>!isCorrect(questions[qi],qi));
+
+  return `<div class="result-card">
+  <div class="result-emoji">${emoji}</div>
+  <div class="result-score ${pass?'score-pass':'score-fail'}">${correct} / ${TOTAL}</div>
+  <div class="result-badge ${pass?'badge-pass':'badge-fail'}">${pass?'합격 ✓':'불합격 ✗'} · 커트라인 ${CUTLINE}개</div>
+  <div class="result-pct">정답률 ${pct}%</div>
+  <div class="stat-row">
+    <div class="stat-card"><div class="stat-num s-ok">${correct}</div><div class="stat-lbl">정답</div></div>
+    <div class="stat-card"><div class="stat-num s-ng">${TOTAL-correct-toCount}</div><div class="stat-lbl">오답</div></div>
+    <div class="stat-card"><div class="stat-num s-to">${toCount}</div><div class="stat-lbl">시간초과</div></div>
+  </div>
+  <button class="retry-btn" id="retry-btn">다시 풀기 (새 랜덤 20문항)</button>
+</div>
+${wrongIdxs.length>0?`
+<div class="review-title">오답 목록 (${wrongIdxs.length}개)</div>
+${wrongIdxs.map(qi=>{
+  const q=questions[qi];
+  const isTO=timeouts[qi];
+  const ans=q.type==='g'?q.blanks.map(b=>b.answer).join(' / '):q.answer;
+  const userAns=q.type==='g'?q.blanks.map((_,bi)=>{const s=answers[`${qi}_${bi}`];return s==='__timeout__'||!s?'시간초과':s;}).join(' / '):(answers[qi]==='__timeout__'?'시간초과':answers[qi]||'?');
+  return `<div class="review-item ${isTO?'to':''}">
+    <div class="r-num">원문 ${q.n}번${isTO?' ⏰':''}</div>
+    <div class="r-en">${q.en}</div>
+    <span class="tag ${isTO?'tag-to':'tag-ng'}">${isTO?'시간초과':'선택: '+userAns}</span>
+    <span class="tag tag-ok">정답: ${ans}</span>
+  </div>`;}).join('')}`
+:`<div style="text-align:center;color:var(--green);font-weight:800;padding:20px;font-size:15px;">전 문항 정답! 완벽합니다 🎉</div>`}`;
+}
+
+function attachEvents(){
+  const app=document.getElementById('app');
+  const s=app.querySelector('#start-btn'); if(s) s.addEventListener('click',start);
+  const r=app.querySelector('#retry-btn'); if(r) r.addEventListener('click',start);
+
+  app.querySelectorAll('.choice-btn').forEach(btn=>btn.addEventListener('click',()=>{
+    const type=btn.dataset.type, choice=btn.dataset.choice;
+    if(type==='g'){
+      const bi=parseInt(btn.dataset.bi), key=`${idx}_${bi}`;
+      if(answers[key]!==undefined) return;
+      const correct=questions[idx].blanks[bi].answer;
+      answers[key]=choice; answers[idx]=choice;
+      const isOk=choice===correct;
+      btn.classList.add(isOk?'correct':'wrong');
+      btn.parentElement.querySelectorAll('.choice-btn').forEach(b2=>{
+        b2.disabled=true;
+        if(!isOk&&b2.dataset.choice===correct) b2.classList.add('correct');
+      });
+      const nextBi=questions[idx].blanks.findIndex((_,i)=>answers[`${idx}_${i}`]===undefined);
+      setTimeout(()=>{
+        if(nextBi>=0){clearInterval(timerInterval);timerSec=TIME_LIMIT;startTimer();render();}
+        else advance();
+      },isOk?400:800);
+    } else {
+      if(answers[idx]!==undefined) return;
+      const correct=questions[idx].answer;
+      answers[idx]=choice;
+      const isOk=choice===correct;
+      btn.classList.add(isOk?'correct':'wrong');
+      btn.parentElement.querySelectorAll('.choice-btn').forEach(b2=>{
+        b2.disabled=true;
+        if(!isOk&&b2.dataset.choice===correct) b2.classList.add('correct');
+      });
+      setTimeout(()=>advance(),isOk?400:800);
+    }
+  }));
+}
+
+render();
+</script>
+</body>
+</html>
